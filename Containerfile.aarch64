@@ -1,0 +1,74 @@
+# syntax=docker/dockerfile-upstream:master-labs
+FROM ubuntu:noble
+
+#
+# Python container for aarch64 systems (macOS/m1-m4, devkit/arm64)
+#
+
+### args
+ARG PACKAGES="libjpeg-turbo8 curl"
+
+### reproducible python (repropy)
+# based on mamba: https://github.com/conda-forge/miniforge
+ARG REPROPY_DIR="/conda"
+ARG REPROPY_ENV="mis"
+ARG REPROPY_PREFIX="${REPROPY_DIR}"
+ARG REPROPY_REQS="requirements.yaml"
+ARG REPROPY_VERSION="25.1.1-0"
+ARG REPROPY_ARCH="Linux-aarch64"
+ARG REPROPY_SETUP="Miniforge3-${REPROPY_VERSION}-${REPROPY_ARCH}.sh"
+ARG REPROPY_URL="https://github.com/conda-forge/miniforge/releases/download/${REPROPY_VERSION}/${REPROPY_SETUP}"
+
+### setup env for using conda
+ENV PATH="${REPROPY_PREFIX}/bin:${PATH}"
+ENV LD_LIBRARY_PATH="${REPROPY_PREFIX}/lib/:\$LD_LIBRARY_PATH"
+
+### install packages
+RUN apt update && apt install -y ${PACKAGES}
+
+# install Mambaforge
+RUN curl -fsSL ${REPROPY_URL} -o /${REPROPY_SETUP} && \
+    echo "4183d312c6a42edd5bc06be21e92b0d8b9afb720efc37df44f3e5002b35f9d2e  /${REPROPY_SETUP}" | sha256sum -c -
+RUN chmod a+x /${REPROPY_SETUP}
+RUN /bin/bash /${REPROPY_SETUP} -b -p ${REPROPY_PREFIX}
+
+# update conda if current version is not up-to-date (recommended by mamba)
+RUN conda update -n base -c conda-forge conda
+
+### setup mamba environment
+COPY ${REPROPY_REQS} /tmp/${REPROPY_REQS}
+
+### setup default mamba environment
+RUN mamba env create -n ${REPROPY_ENV} -f /tmp/${REPROPY_REQS}
+RUN mamba shell init -s bash
+RUN echo "mamba activate ${REPROPY_ENV}" >> /root/.bashrc
+
+###############################################################################
+# add custom commands here
+
+# all following RUNs must run in a real login shell within the activated conda environment
+RUN mamba run -n ${REPROPY_ENV} /bin/bash --login -c "echo 'Hello, Repropy!'"
+
+# end of custom commands
+###############################################################################
+
+# change workdir to make notebooks browseable in jupyter notebooks
+WORKDIR /workspaces
+
+### setup volumes
+
+# jupyter notebooks
+VOLUME [ "/notebooks" ]
+
+# vscode workspace
+VOLUME [ "/workspaces/vscode" ]
+
+# vscode extensions
+VOLUME [ "/root/.vscode-server"]
+
+# document ports
+EXPOSE 8888/tcp
+EXPOSE 8889/tcp
+
+### set container entry
+ENTRYPOINT [ "/bin/sh", "-c", "while sleep 1000; do :; done" ]

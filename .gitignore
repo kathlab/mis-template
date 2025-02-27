@@ -1,0 +1,8 @@
+**/__pycache__
+**/._*
+**/*.DS_Store
+**/*.ipynb_checkpoints
+vscode-container-ext/.vscode-server/bin
+vscode-container-ext/.vscode-server/data
+vscode-container-ext/.vscode-server/extensions
+vscode-container-ext/.vscode-server/extensionsCache
