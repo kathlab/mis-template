@@ -78,22 +78,18 @@ This handbook template provides a documentation base setup for lab projects and 
 
 > 📦 Add a list of all stakeholders of the project (internal, external).
 
-**Time frame:** DD.MM.YYYY - DD.MM.YYYY
+**Time frame:** YYYY.MM.DD - YYYY.MM.DD
 
 > 📦 Add a project time frame. When do you work on this project?
 
 
 ### Repositories
 
-> 📦 Fork the github MIS template. This is the foundation of any work in the MIS lab.
-
-MIS template: [https://github.com/kathlab/mis-template](https://github.com/kathlab/mis-template)
-
 > 📦 Edit README.md in your repository and provide the base information.
 
-> 📦 Provide a link (or multiple) to the sources of the project. Regular projects must use a private github repository, NDA projects use internal gitlab.
+> 📦 Provide a link (or multiple) to the sources of the project. Regular projects must use a private github repository, NDA projects must use internal gitlab.
 
-**Git repository:** https://github.com/kathlab/templates
+**Git repository:** https://github.com/kathlab/mis-template
 
 > 🚫 **If you need more repositories**, just fork the template and start a new project.
 

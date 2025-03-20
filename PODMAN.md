@@ -73,9 +73,10 @@ podman build --platform linux/amd64 -f Containerfile.x86_64 -t local/mistemplate
 ## Run container
 
 ```
-podman container rm vcsmistemplate || podman run -d --interactive --name vcsmistemplate \
+podman run --replace --log-level=info -d --interactive --name vcsmistemplate \
   -u root:root \
   -e HOME=/home/vscode \
+  -v "$(pwd)/notebooks:/notebooks" \
   -v "$(pwd):/workspaces/vscode" \
   -v "$(pwd)/vscode-container-ext/.vscode-server:/home/vscode/.vscode-server" \
   local/mistemplate:latest \
